@@ -31,6 +31,8 @@ speed-measure-plugin.json
 .history/*
 
 # misc
+/.firebaserc
+/.firebase
 /.sass-cache
 /connect.lock
 /coverage

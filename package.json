@@ -11,8 +11,8 @@
   "keywords": [],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "js": "tsc -p .",
-    "js:w": "tsc -w -p .",
+    "js": "tsc --noEmit -p .",
+    "js:w": "tsc --noEmit -w -p .",
     "copy": "copyfiles -u 1 src/index.html src/*.js src/*.json src/styles/*.css src/js/*.js src/images/* build",
     "pug": "pug src -b './src'",
     "pug:w": "pug src -P -w -b './src'",
@@ -20,15 +20,20 @@
     "sass:w": "node-sass --output-style compressed -w -r ./src/styles -o ./src/styles",
     "workbox": "workbox injectManifest workbox-config.js",
     "uglify": "for f in $(find ./build/ -name \"*.js\"); do uglifyjs --mangle -o $f $f; done",
-    "watch": "npm run pug:w & npm run sass:w & npm run js:w",
-    "build": "rm -rf build/* && npm run js && npm run pug && npm run sass && npm run copy && npm run uglify && npm run workbox"
+    "rollup": "rollup -c",
+    "rollup:w": "rollup -w -c",
+    "watch": "npm run pug:w & npm run sass:w & npm run rollup:w",
+    "build": "rm -rf build/* && npm run js && npm run rollup && npm run pug && npm run sass && npm run copy && npm run uglify && npm run workbox"
   },
   "devDependencies": {
     "copyfiles": "^2.1.0",
     "gts": "^0.9.0",
     "node-sass": "^4.11.0",
     "pug-cli": "github:pugjs/pug-cli#master",
-    "typescript": "~3.1.0",
+    "rollup": "^1.1.2",
+    "rollup-plugin-typescript": "^1.0.0",
+    "tslib": "^1.9.3",
+    "typescript": "^3.1.6",
     "uglify-es": "^3.3.9",
     "workbox-cli": "^3.6.3"
   },

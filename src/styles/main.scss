@@ -2,6 +2,9 @@ $color-dark: #690000;
 $color-enabled: #fff;
 $color-disabled: #777;
 
+@import 'ripple';
+
+
 html, body {
   margin: 0;
   padding: 0;
@@ -10,11 +13,10 @@ html, body {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr 52px 1fr;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
 
 #content {
   display: flex;
@@ -27,7 +29,7 @@ body {
     text-align: center;
     font-size: 20px;
     background: transparent;
-    padding: 70px 0;
+    padding: 50px 0;
   }
 }
 
@@ -45,6 +47,7 @@ body {
 }
 
 #controls {
+  min-width: 0;
   display: flex;
   flex: 2;
   background-color: $color-dark;
@@ -105,12 +108,12 @@ body {
 
 #band {
   overflow: hidden;
-  padding-bottom: 10px;
+  padding: 10px 0;
   background-color: #fff;
   #lengths {
     white-space : nowrap;
     position: relative;
-    transition: left 0.5s ease-in-out 0s;
+    transition: left 0.5s ease-in-out 0s, top 0.5s ease-in-out 0s;
     span {
       color: $color-disabled;
       display: inline-flex;
@@ -133,4 +136,22 @@ body {
   }
 }
 
-@import 'ripple';
+@media (max-height: 600px) {
+  body {
+    grid-template-rows: none;
+    grid-template-columns: 1fr 52px 1fr;
+  }
+  #content input#password {
+    padding: 30px 0;    
+  }
+  #band {
+    padding: 0 10px;
+    #lengths {
+      white-space: normal;
+      span {
+        margin: 7vh 0;
+      }
+    }
+  }
+}
+
