@@ -41,7 +41,7 @@
   }
   function getRandomArray(length, max) {
       return Array
-          .from(window.crypto.getRandomValues(new Uint32Array(length)))
+          .from(self.crypto.getRandomValues(new Uint32Array(length)))
           .map(i => Math.floor(i / (0xffffffff + 1) * max));
   }
   function generatePasswordFromInput(data) {

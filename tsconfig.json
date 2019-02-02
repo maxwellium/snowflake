@@ -5,7 +5,8 @@
     "outDir": ".",
     "lib": [
       "dom",
-      "es6"
+      "es6",
+      "webworker"
     ],
     "target": "es2017",
     "sourceMap": false,

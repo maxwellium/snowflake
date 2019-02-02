@@ -8,44 +8,45 @@
       symbols: '!#$%&*+-=?@^_',
       extendedSymbols: '{}[]()\/\'"`~,;:.<>\\|'
   };
+  //# sourceMappingURL=pool.js.map
 
-  function getRandomArray(length, max) {
-      return Array
-          .from(window.crypto.getRandomValues(new Uint32Array(length)))
-          .map(i => Math.floor(i / (0xffffffff + 1) * max));
-  }
-
-  let pool = Object.keys(POOL).map(k => POOL[k]).join(''), minLength = 4, maxLength = 32, iterations = 1000000;
-  const table = document.getElementById('table'), runButton = document.getElementById('run'), sortButton = document.getElementById('sort');
-  async function run() {
-      const distribution = {}, poolArray = pool.split('');
-      poolArray.reduce((d, c) => { d[c] = 0; return d; }, distribution);
-      for (let i = 0; i < iterations; i++) {
-          const length = Math.random() * (maxLength - minLength) + minLength;
-          const randoms = await getRandomArray(length, pool.length);
-          for (let i2 = 0; i2 < randoms.length; i2++) {
-              distribution[pool[randoms[i2]]]++;
-          }
+  function statsFromDistribution(distribution) {
+      const values = [];
+      let sum = 0, count = 0, median = 0;
+      for (let c in distribution) {
+          sum += distribution[c];
+          count++;
       }
-      for (let c of poolArray) {
-          const row = table.insertRow();
-          row.insertCell().innerText = c;
-          row.insertCell().innerText = String(distribution[c]);
+      median = sum / count;
+      for (let c in distribution) {
+          values.push({
+              c,
+              count: distribution[c],
+              fromMedian: distribution[c] - median
+          });
       }
+      return { sum, count, median, values };
   }
-  function sort() {
-      let rows, switching, i, x, y, shouldSwitch;
-      switching = true;
+  function sortTable(table, index, numeric = true) {
+      let switching = true, shouldSwitch = false, rows, i, x, y;
       while (switching) {
           switching = false;
           rows = table.rows;
           for (i = 1; i < (rows.length - 1); i++) {
               shouldSwitch = false;
-              x = rows[i].getElementsByTagName("TD")[1];
-              y = rows[i + 1].getElementsByTagName("TD")[1];
-              if (parseInt(x.innerHTML) > parseInt(y.innerHTML)) {
-                  shouldSwitch = true;
-                  break;
+              x = rows[i].getElementsByTagName('TD')[index];
+              y = rows[i + 1].getElementsByTagName('TD')[index];
+              if (numeric) {
+                  if (parseFloat(x.innerText) > parseFloat(y.innerText)) {
+                      shouldSwitch = true;
+                      break;
+                  }
+              }
+              else {
+                  if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+                      shouldSwitch = true;
+                      break;
+                  }
               }
           }
           if (shouldSwitch) {
@@ -54,7 +55,45 @@
           }
       }
   }
+  //# sourceMappingURL=helper.js.map
+
+  let pool = Object.keys(POOL).map(k => POOL[k]).join(''), minLength = 4, maxLength = 32, iterations = 100000;
+  const table = document.getElementById('table'), runButton = document.getElementById('run'), sortChar = document.getElementById('sortChar'), sortCount = document.getElementById('sortCount'), sortDistance = document.getElementById('sortDistance'), countSpan = document.getElementById('count'), sumSpan = document.getElementById('sum'), medianSpan = document.getElementById('median');
+  const worker = new Worker('worker.js');
+  function run() {
+      runButton.disabled = true;
+      function handleWorkerCompletion(message) {
+          if (message.data.command !== 'done') {
+              return;
+          }
+          worker.removeEventListener('message', handleWorkerCompletion);
+          runButton.disabled = false;
+          const distribution = message.data.distribution;
+          const stats = statsFromDistribution(distribution);
+          while (table.rows.length > 1) {
+              table.deleteRow(-1);
+          }
+          for (let value of stats.values) {
+              const row = table.insertRow();
+              row.insertCell().innerText = value.c;
+              row.insertCell().innerText = String(value.count);
+              row.insertCell().innerText = value.fromMedian.toFixed(2);
+          }
+          sumSpan.innerText = String(stats.sum);
+          countSpan.innerText = String(stats.count);
+          medianSpan.innerText = stats.median.toFixed(2);
+      }
+      worker.addEventListener('message', handleWorkerCompletion, false);
+      worker.postMessage({
+          pool,
+          iterations,
+          minLength,
+          maxLength
+      });
+  }
   runButton.addEventListener('click', run, false);
-  sortButton.addEventListener('click', sort, false);
+  sortChar.addEventListener('click', () => sortTable(table, 0, false), false);
+  sortCount.addEventListener('click', () => sortTable(table, 1), false);
+  sortDistance.addEventListener('click', () => sortTable(table, 2), false);
 
 }());

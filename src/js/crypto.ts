@@ -15,7 +15,11 @@ export function getRandomArray( length: number, max: number ): number[] {
    **/
   return Array
     .from(
-      window.crypto.getRandomValues(
+      /**
+       * we're using self here, so it also executes in the worker
+       * in the test
+       */
+      self.crypto.getRandomValues(
         new Uint32Array( length )
       ) )
     .map(

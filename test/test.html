@@ -8,13 +8,32 @@
 </head>
 
 <body>
+  <p>Click Start</p>
   <button id="run">Start</button>
-  <button id="sort">Sort</button>
+
+  <table>
+    <tr>
+      <th>Sample count</th>
+      <td><span id="count"></span></td>
+    </tr>
+    <tr>
+      <th>Sum</th>
+      <td><span id="sum"></span></td>
+    </tr>
+    <tr>
+      <th>Median</th>
+      <td><span id="median"></span></td>
+    </tr>
+  </table>
+
+  <p>Then click the table headers below to sort</p>
+
   <table id="table">
     <thead>
       <tr>
-        <th>Char</th>
-        <th>Count</th>
+        <th id="sortChar">Char</th>
+        <th id="sortCount">Count</th>
+        <th id="sortDistance">Distance to Median</th>
       </tr>
     </thead>
   </table>
