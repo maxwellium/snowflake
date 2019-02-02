@@ -8,7 +8,6 @@
       symbols: '!#$%&*+-=?@^_',
       extendedSymbols: '{}[]()\/\'"`~,;:.<>\\|'
   };
-  //# sourceMappingURL=pool.js.map
 
   function statsFromDistribution(distribution) {
       const values = [];
@@ -55,7 +54,6 @@
           }
       }
   }
-  //# sourceMappingURL=helper.js.map
 
   let pool = Object.keys(POOL).map(k => POOL[k]).join(''), minLength = 4, maxLength = 32, iterations = 100000;
   const table = document.getElementById('table'), runButton = document.getElementById('run'), sortChar = document.getElementById('sortChar'), sortCount = document.getElementById('sortCount'), sortDistance = document.getElementById('sortDistance'), countSpan = document.getElementById('count'), sumSpan = document.getElementById('sum'), medianSpan = document.getElementById('median');

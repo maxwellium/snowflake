@@ -4,10 +4,7 @@ export interface Distribution {
   [ c: string ]: number
 };
 
-// typescript bug :(
-const ctx = <Worker> <unknown> self;
-
-ctx.addEventListener( 'message', onMessage );
+self.addEventListener( 'message', onMessage );
 
 function onMessage( message: MessageEvent ) {
   const {
@@ -19,7 +16,7 @@ function onMessage( message: MessageEvent ) {
 
   const distribution = run( pool, iterations, minLength, maxLength );
 
-  ctx.postMessage( {
+  ( self as unknown as Worker ).postMessage( {
     command: 'done',
     distribution: distribution
   } );

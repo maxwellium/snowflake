@@ -7,12 +7,11 @@
           .map(i => Math.floor(i / (0xffffffff + 1) * max));
   }
 
-  const ctx = self;
-  ctx.addEventListener('message', onMessage);
+  self.addEventListener('message', onMessage);
   function onMessage(message) {
       const { pool, iterations, minLength, maxLength } = message.data;
       const distribution = run(pool, iterations, minLength, maxLength);
-      ctx.postMessage({
+      self.postMessage({
           command: 'done',
           distribution: distribution
       });
